@@ -7,20 +7,20 @@ branding:
   color: 'orange'
 
 inputs:
-  functions_dir:
-    description: 'Directory containing functions and pyproject.toml'
-    required: false
-    default: 'functions'
-  deploy_command:
-    description: 'Deployment command to execute (e.g. "firebase deploy --only functions", "make deploy")'
-    required: false
-    default: 'firebase deploy --only functions'
-  project_id:
-    description: 'Firebase project ID'
-    required: true
   service_account_json:
     description: 'Firebase service account JSON'
     required: true
+  deploy_command:
+    description: 'Deploym command (e.g. "firebase deploy --only functions", "make deploy")'
+    required: false
+    default: 'firebase deploy --only functions'
+  project_id:
+    description: 'Firebase project ID (will firebase use <project_id> if specified)'
+    required: false
+  functions_dir:
+    description: 'Directory containing functions and pyproject.toml (if requirements.txt is not present, will create with uv)'
+    required: false
+    default: 'functions'
 
 runs:
   using: 'composite'
@@ -46,6 +46,7 @@ runs:
       uses: astral-sh/setup-uv@v5
 
     - name: Setup Python from pyproject.toml
+      if: ${{ inputs.functions_dir && !hashFiles(inputs.functions_dir + '/requirements.txt') }}
       shell: bash
       run: |
         cd ${{ inputs.functions_dir }}
@@ -58,28 +59,9 @@ runs:
       with:
         credentials_json: '${{ inputs.service_account_json }}'
 
-    - name: Verify service account ADC (Debug)
-      shell: bash
-      run: |
-        gcloud config get-value account
-        gcloud auth list
-
-    - name: Verify Enabled APIs (Debug)
-      shell: bash
-      run: |
-        gcloud services list --enabled --project=${{ inputs.project_id }}
-
-    - name: List Firebase Projects (Debug Mode)
-      shell: bash
-      run: firebase projects:list --debug
-
-    - name: Verify Service Account IAM Policy (Debug)
-      shell: bash
-      run: |
-        echo "Verifying IAM policy for project: ${{ inputs.project_id }}"
-        gcloud projects get-iam-policy ${{ inputs.project_id }} --format=json
 
     - name: Select Firebase Project
+      if: ${{ inputs.project_id }}
       shell: bash
       run: |
         firebase use ${{ inputs.project_id }} --non-interactive

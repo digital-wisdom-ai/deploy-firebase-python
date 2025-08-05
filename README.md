@@ -43,24 +43,32 @@ Basic usage:
 ```yaml
 - uses: digital-wisdom/deploy-firebase-python@v1
   with:
-    project_id: my-firebase-project
     service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
     deploy_command: "make deploy-staging"
+```
+
+### Custom functions directory:
+```yaml
+- uses: digital-wisdom/deploy-firebase-python@v1
+  with:
+    service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    functions_dir: "backend/functions"
+    project_id: my-firebase-project
 ```
 
 ## Inputs
 
 | Input                 | Description                                       | Required | Default                        |
 | --------------------- | ------------------------------------------------- | -------- | ------------------------------ |
-| `functions_dir`       | Directory containing functions and pyproject.toml | No       | `functions`                    |
-| `deploy_command`      | Deployment command to execute                     | No       | `firebase deploy --only functions` |
-| `project_id`          | Firebase project ID                               | Yes      | N/A                            |
 | `service_account_json`| Firebase service account JSON                     | Yes      | N/A                            |
+| `deploy_command`      | Deployment command to execute                     | No       | `firebase deploy --only functions` |
+| `project_id`          | Firebase project ID (runs `firebase use` if specified) | No       | N/A                            |
+| `functions_dir`       | Directory with pyproject.toml (creates requirements.txt if missing) | No       | `functions`                    |
 
 ## Prerequisites
 
 - Firebase service account key
-- Python project with pyproject.toml in functions directory
+- requirements.txt or pyproject.toml in functions_dir
 
 ## Environment Variables
 
