@@ -16,19 +16,46 @@ Basic usage:
 - uses: digital-wisdom/deploy-firebase-python@v1
   with:
     project_id: my-firebase-project
-    service_account_json_b64: ${{ inputs.service_account_b64 }} # Must be base64 encoded
+    service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    deploy_command: "firebase deploy --only functions"
 ```
 
-The action requires the service account JSON to be base64 encoded. How you provide this encoded value is up to your workflow design.
+## Examples
+
+### Basic Firebase deployment:
+```yaml
+- uses: digital-wisdom/deploy-firebase-python@v1
+  with:
+    project_id: my-firebase-project
+    service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+```
+
+### Deploy specific functions:
+```yaml
+- uses: digital-wisdom/deploy-firebase-python@v1
+  with:
+    project_id: my-firebase-project
+    service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    deploy_command: "firebase deploy --only functions:api,functions:webhook"
+```
+
+### Using make for deployment:
+```yaml
+- uses: digital-wisdom/deploy-firebase-python@v1
+  with:
+    project_id: my-firebase-project
+    service_account_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    deploy_command: "make deploy-staging"
+```
 
 ## Inputs
 
-| Input                      | Description                                       | Required | Default     |
-| -------------------------- | ------------------------------------------------- | -------- | ----------- |
-| `functions_dir`            | Directory containing functions and pyproject.toml | No       | `functions` |
-| `to_deploy`                | Firebase resource to deploy (e.g. functions)      | No       | `functions` |
-| `project_id`               | Firebase project ID                               | Yes      | N/A         |
-| `service_account_json_b64` | Base64-encoded Firebase service account JSON      | Yes      | N/A         |
+| Input                 | Description                                       | Required | Default                        |
+| --------------------- | ------------------------------------------------- | -------- | ------------------------------ |
+| `functions_dir`       | Directory containing functions and pyproject.toml | No       | `functions`                    |
+| `deploy_command`      | Deployment command to execute                     | No       | `firebase deploy --only functions` |
+| `project_id`          | Firebase project ID                               | Yes      | N/A                            |
+| `service_account_json`| Firebase service account JSON                     | Yes      | N/A                            |
 
 ## Prerequisites
 

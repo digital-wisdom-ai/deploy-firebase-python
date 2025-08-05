@@ -49,3 +49,4 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
           service_account_json: ${{ env.CREDENTIALS_JSON }}
+          deploy_command: "firebase deploy --only functions"
