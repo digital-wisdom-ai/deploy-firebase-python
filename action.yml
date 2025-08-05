@@ -46,7 +46,9 @@ runs:
       uses: astral-sh/setup-uv@v5
 
     - name: Setup Python from pyproject.toml
-      if: ${{ inputs.functions_dir && !hashFiles(inputs.functions_dir + '/requirements.txt') }}
+      env:
+        REQUIREMENTS_PATH: ${{ inputs.functions_dir }}/requirements.txt
+      if: ${{ !hashFiles(env.REQUIREMENTS_PATH) }}
       shell: bash
       run: |
         cd ${{ inputs.functions_dir }}
