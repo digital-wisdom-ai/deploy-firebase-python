@@ -11,7 +11,7 @@ inputs:
     description: 'Firebase service account JSON'
     required: true
   deploy_command:
-    description: 'Deploym command (e.g. "firebase deploy --only functions", "make deploy")'
+    description: 'Deploy command (e.g. "firebase deploy --only functions", "make deploy")'
     required: false
     default: 'firebase deploy --only functions'
   project_id:
